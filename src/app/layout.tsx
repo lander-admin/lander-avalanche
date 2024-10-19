@@ -8,15 +8,13 @@ import 'rc-slider/assets/index.css';
 import Footer from '@/components/Footer';
 import FooterNav from '@/components/FooterNav';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { AppKit } from '@/contexts/Web3ModalProvider';
+import { AppKit } from '@/contexts/Web3ModalProvider.jsx';
 import { TransactionProvider } from '@/contexts/CheckoutProvider';
 import GTM from '@/components/GTM';
 import { headers } from 'next/headers';
 import { BlockchainProvider } from '@/contexts/BlockchainContext';
 import { UserProvider } from '@/contexts/UserContext';
 import { ChakraProvider } from '@chakra-ui/react';
-import { OnchainKitProvider } from '@coinbase/onchainkit';
-import { base } from 'viem/chains';
 import '@rainbow-me/rainbowkit/styles.css';
 
 const poppins = Poppins({

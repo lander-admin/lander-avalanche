@@ -35,43 +35,19 @@ import Image from 'next/image';
 import { useAccount } from 'wagmi';
 import { Address } from 'viem';
 import { useRouter } from 'next/navigation';
+import { useEthersSigner } from '@/blockchain';
+import { Approve, GetAllowance, Mint } from '@/blockchain/functions';
+import { avalancheTestnetAddresses } from '@/constants/addresses';
+import { useBlockchain } from '@/contexts/BlockchainContext';
 
 export default function RealStateDetailContainer({
   property,
 }: {
   property: IRealState;
 }) {
-  const [investmentAmount, setInvestmentAmount] = useState(0.4);
-  const { address } = useAccount();
+  const { address } = useBlockchain();
   const router = useRouter();
-  //   const property = {
-  //     name: 'Luxury Apartment 1',
-  //     type: 'Fractional Investment',
-  //     price: 500000,
-  //     minInvestment: 10000,
-  //     maxInvestment: 100000,
-  //     annualReturn: 8.5,
-  //     location: 'Downtown, City',
-  //     bedrooms: 2,
-  //     bathrooms: 2,
-  //     area: 1200,
-  //     yearBuilt: 2020,
-  //     description:
-  //       'This luxurious apartment offers stunning views of the city skyline and top-notch amenities. Perfect for those looking to invest in high-end real estate with strong rental potential.',
-  //     features: [
-  //       '24/7 Concierge',
-  //       'Fitness Center',
-  //       'Rooftop Pool',
-  //       'Smart Home Technology',
-  //       'Secure Parking',
-  //     ],
-  //     financials: {
-  //       rentalIncome: 3000,
-  //       propertyTax: 500,
-  //       insurance: 150,
-  //       maintenance: 200,
-  //     },
-  //   };
+  const signer = useEthersSigner();
 
   const comparisonProperties = [
     {
@@ -100,6 +76,26 @@ export default function RealStateDetailContainer({
     },
   ];
 
+  async function mint() {
+    if (!signer) return;
+    const allowance = await GetAllowance(
+      signer,
+      address as string,
+      avalancheTestnetAddresses.WETH
+    );
+
+    if (allowance < '100000') {
+      Approve(signer, avalancheTestnetAddresses.WETH);
+    }
+
+    Mint(
+      signer,
+      avalancheTestnetAddresses.NFT_TEST_1,
+      'mintWETH',
+      address as string
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Button variant="ghost" className="mb-4" onClick={() => router.back()}>
@@ -113,14 +109,6 @@ export default function RealStateDetailContainer({
             className="w-full h-[400px] object-cover rounded-lg mb-4"
           />
           <div className="grid grid-cols-4 gap-2">
-            {/* {[1, 2, 3, 4].map((i) => (
-              <img
-                key={i}
-                src={`/placeholder.svg?height=100&width=150`}
-                alt={`${property.title} view ${i}`}
-                className="w-full h-[100px] object-cover rounded-lg"
-              />
-            ))} */}
             <img
               src={property.main_image}
               alt={`${property.title} view 1`}
@@ -358,10 +346,8 @@ export default function RealStateDetailContainer({
           </Table>
         </div>
       </div>
-      <Button
-        className="w-full"
-        // onClick={() => MintUSDC({ address: address as Address })}
-      >
+
+      <Button className="w-full" onClick={mint}>
         This is a demo button
       </Button>
     </div>

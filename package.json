@@ -129,6 +129,7 @@
     "styled-components": "^6.0.0-rc.6",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.5.2",
+    "@0xstt/builderkit": "^0.0.1",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.0.4",
     "use-debounce": "^10.0.0",
