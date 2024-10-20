@@ -6,4 +6,5 @@ export interface Token {
   name: string;
   payable: boolean;
   symbol: string;
+  function?: string | null;
 }

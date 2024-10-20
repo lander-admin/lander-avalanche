@@ -46,7 +46,7 @@ const StaySearchForm: FC<{
         <GuestsInput className="md:flex-1" onChange={onChangeGuestsHandler} />
         <button
           type="submit"
-          className="self-center h-14 md:h-16 w-full md:w-16 rounded-full bg-primary-6000 hover:bg-primary-700 flex items-center justify-center text-neutral-50 focus:outline-none"
+          className="self-center h-14 md:h-16 w-4/12 md:w-16 rounded-full bg-primary-6000 hover:bg-primary-700 flex items-center justify-center text-neutral-50 focus:outline-none"
         >
           <span className="mr-3 md:hidden">search</span>
           <svg

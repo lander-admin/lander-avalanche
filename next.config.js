@@ -159,6 +159,25 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      /////
+      {
+        protocol: 'https',
+        hostname: 'assets.coingecko.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'dynamic-assets.coinbase.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'testnet.snowtrace.io',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

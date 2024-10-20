@@ -1,12 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -19,26 +16,20 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Slider } from '@/components/ui/slider';
-import {
-  ArrowLeft,
-  Bed,
-  Bath,
-  Square,
-  DollarSign,
-  PieChart,
-  Calendar,
-} from 'lucide-react';
+import { ArrowLeft, Bed, Bath, Square } from 'lucide-react';
 import { IRealState } from '@/data/types';
-import Image from 'next/image';
-//import { MintUSDC } from '@/utils/blockchain';
-import { useAccount } from 'wagmi';
-import { Address } from 'viem';
 import { useRouter } from 'next/navigation';
 import { useEthersSigner } from '@/blockchain';
 import { Approve, GetAllowance, Mint } from '@/blockchain/functions';
 import { avalancheTestnetAddresses } from '@/constants/addresses';
 import { useBlockchain } from '@/contexts/BlockchainContext';
+import { Spinner, TokenChip, TokenIcon } from '@0xstt/builderkit';
+import Button from '@/shared/Button';
+import { useState } from 'react';
+import { TokensTestAvalanche } from '@/constants/Tokens';
+import { TokenImage } from '@coinbase/onchainkit/token';
+import Image from 'next/image';
+import Notiflix from 'notiflix';
 
 export default function RealStateDetailContainer({
   property,
@@ -48,7 +39,7 @@ export default function RealStateDetailContainer({
   const { address } = useBlockchain();
   const router = useRouter();
   const signer = useEthersSigner();
-
+  const [loading, setLoading] = useState(false);
   const comparisonProperties = [
     {
       name: 'City View Condo',
@@ -76,29 +67,33 @@ export default function RealStateDetailContainer({
     },
   ];
 
-  async function mint() {
+  async function mint(token: string, functionName: string) {
     if (!signer) return;
-    const allowance = await GetAllowance(
-      signer,
-      address as string,
-      avalancheTestnetAddresses.WETH
-    );
+    try {
+      setLoading(true);
+      const allowance = await GetAllowance(signer, address as string, token);
 
-    if (allowance < '100000') {
-      Approve(signer, avalancheTestnetAddresses.WETH);
+      if (allowance < '100000' && functionName !== 'mint') {
+        Approve(signer, token);
+      }
+
+      Mint(
+        signer,
+        avalancheTestnetAddresses.NFT_TEST_1,
+        functionName,
+        address as string
+      );
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      Notiflix.Notify.failure(error as string);
+      setLoading(false);
     }
-
-    Mint(
-      signer,
-      avalancheTestnetAddresses.NFT_TEST_1,
-      'mintWETH',
-      address as string
-    );
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Button variant="ghost" className="mb-4" onClick={() => router.back()}>
+      <Button className="mb-4" onClick={() => router.back()}>
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Listings
       </Button>
       <div className="grid md:grid-cols-2 gap-8">
@@ -346,10 +341,28 @@ export default function RealStateDetailContainer({
           </Table>
         </div>
       </div>
-
-      <Button className="w-full" onClick={mint}>
-        This is a demo button
-      </Button>
+      <div className="flex gap-2 flex-col mt-10 w-6/12 m-auto items-center justify-center">
+        <h2 className="text-xl font-bold">Select Token</h2>
+        <div className="flex gap-2 flex-row w-6/12 m-auto items-center justify-center">
+          {TokensTestAvalanche.map((token) => (
+            <Button
+              className="w-1/6 p-2 bg-gray-200 rounded-xl m-auto"
+              onClick={() => mint(token.address, token.function || '')}
+            >
+              {!loading ? (
+                <Image
+                  src={token.image}
+                  alt={token.name}
+                  width={20}
+                  height={20}
+                />
+              ) : (
+                <Spinner />
+              )}
+            </Button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
