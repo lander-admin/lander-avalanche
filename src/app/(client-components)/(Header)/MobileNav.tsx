@@ -41,7 +41,6 @@ export default function MobileNav() {
     { name: 'Trips', icon: Map, href: { pathname: '/my-trips' } },
     { name: 'Swap', icon: Zap, href: { pathname: '/swap' } },
     { name: 'Bookings', icon: Calendar, href: { pathname: '/my-bookings' } },
-    { name: 'Explore', icon: Compass, href: { pathname: '/explore' } },
     { name: 'Invest', icon: TrendingUp, href: { pathname: '/real-state' } },
   ];
 
