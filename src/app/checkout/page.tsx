@@ -7,7 +7,11 @@ import { findPropertyById } from '@/services/listings';
 import { useRouter } from 'next/navigation';
 import { useBlockchain } from '@/contexts/BlockchainContext';
 import ConnectModal from '@/components/ConnectWalletModal';
-import { TokensBase, TokensPolygon } from '@/constants/Tokens';
+import {
+  TokensBase,
+  TokensPolygon,
+  TokensTestAvalanche,
+} from '@/constants/Tokens';
 import { FundButton, getOnrampBuyUrl } from '@coinbase/onchainkit/fund';
 import { useChainId } from 'wagmi';
 
@@ -20,7 +24,10 @@ export default function StayDetailPage() {
 
   const chainId = useChainId();
   const tokensChainPay = chainId === 8453 ? TokensBase : TokensPolygon;
-  const tokensPay = tokensChainPay.filter((token) => token.payable === true);
+  //  const tokensPay = tokensChainPay.filter((token) => token.payable === true);
+  const tokensPay = TokensTestAvalanche.filter(
+    (token) => token.payable === true
+  );
   console.log(tokensPay, 'tokensFilter');
   const [propData, setPropData] = useState<any | null>(null);
 

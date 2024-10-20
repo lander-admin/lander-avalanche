@@ -99,7 +99,7 @@ export const TokensTestAvalanche: Token[] = [
     chainId: 43113,
     decimals: 18,
     name: 'WETH',
-    payable: false,
+    payable: true,
     symbol: 'WETH',
     function: 'mintWETH',
     image:
@@ -121,7 +121,7 @@ export const TokensTestAvalanche: Token[] = [
     chainId: 43113,
     decimals: 18,
     name: 'Avax',
-    payable: false,
+    payable: true,
     symbol: 'AVAX',
     image: 'https://testnet.snowtrace.io/cdn/chains/avax/avax_32.avif',
     function: 'mint',

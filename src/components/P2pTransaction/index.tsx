@@ -14,7 +14,11 @@ import { Address, erc20Abi } from 'viem';
 import { useBlockchain } from '@/contexts/BlockchainContext';
 import { polygonAddresses } from '@/constants/addresses';
 import { Contract, ethers } from 'ethers';
-import { TokensBase, TokensPolygon } from '@/constants/Tokens';
+import {
+  TokensBase,
+  TokensPolygon,
+  TokensTestAvalanche,
+} from '@/constants/Tokens';
 import { Token, TokenChip } from '@coinbase/onchainkit/token';
 import {
   Connection,
@@ -28,6 +32,8 @@ import { useEthersSigner, useEthersProvider } from '@/blockchain';
 import { config } from '@/constants/wagmi-config';
 import { useChainId } from 'wagmi';
 import { useChainContract } from '@/hooks/useChainContract';
+import Image from 'next/image';
+import { Button, Spinner } from '@chakra-ui/react';
 interface ContractInteractionProps {
   disabled?: boolean;
   amount: number;
@@ -67,7 +73,7 @@ const BuyButton: FC<ContractInteractionProps> = ({
   const provider = useEthersProvider();
   const signer = useEthersSigner();
   const chainId = useChainId();
-  const landerContract = useChainContract(chainId);
+  const landerContract = '0xF414A98E991cd9654304E4Daa9f0978FFDB73bb2';
   async function CreateTransaction() {
     try {
       setLoading(true);
@@ -147,76 +153,30 @@ const BuyButton: FC<ContractInteractionProps> = ({
       setLoading(false);
     }
   }
-  const token =
-    chainId === 8453
-      ? TokensBase?.find((token) => token.name === tokenName)
-      : TokensPolygon?.find((token) => token.name === tokenName);
-  // const handleSend = async () => {
-  //   if (!publicKey) {
-  //     console.error('No se ha conectado a la billetera.');
-  //     return;
-  //   }
+  const token = TokensTestAvalanche.find((token) => token.name === tokenName);
 
-  //   const toAddress = 'C46KB5iG71zwaoQRyVtVEfZe95kaNRD6YYqeUnKcZWs';
-  //   const amount = 1000000;
-  //   const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-
-  //   const transactionSol = new Transaction().add(
-  //     SystemProgram.transfer({
-  //       fromPubkey: publicKey,
-  //       toPubkey: new PublicKey(toAddress),
-  //       lamports: amount,
-  //     })
-  //   );
-
-  //   try {
-  //     const signature = await sendTransaction(transactionSol, connection);
-  //     console.log('Transacción enviada con éxito. ID:', signature);
-  //     const transactionInfo = {
-  //       amount: ethers.formatUnits(amount, 9),
-  //       from: address as string,
-  //       to: toAddress,
-  //       decimals: 9,
-  //       token: 'native',
-  //     };
-  //     const txID = await updateBookingStatus({
-  //       bookingId: transaction?.id as string,
-  //       status: 'pending',
-  //       txHash: signature,
-  //       chain: 'sol',
-  //       owner_wallet,
-  //       buyer_wallet,
-  //       transactionInfo: transactionInfo,
-  //       buyer_id,
-  //       owner_id,
-  //     });
-
-  //     console.log(txID, 'txID');
-  //   } catch (error) {
-  //     console.error('Error al enviar SOL:', error);
-  //   }
-  // };
-  console.log(token, 'token');
   return (
     <>
       {!transactionId && chain === 'evm' && (
-        <section onClick={CreateTransaction}>
-          <TokenChip token={token as Token} className="bg-none" />
-        </section>
-      )}
-      {/* {chain === 'solana' && (
-        <section onClick={handleSend}>
-          <Button className="bg-violet-700 text-white rounded-3xl">
-            Buy with Sol
+        <section>
+          <Button
+            key={token?.address}
+            className="w-7/12  bg-gray-200 rounded-xl m-auto"
+            onClick={CreateTransaction}
+          >
+            {!loading ? (
+              <Image
+                src={token?.image || ''}
+                alt={token?.name || ''}
+                width={60}
+                height={60}
+              />
+            ) : (
+              <Spinner />
+            )}
           </Button>
         </section>
       )}
-
-      {!isConnected && (
-        <h3 className="flex-grow text-left text-sm font-medium text-red-700 mt-1 sm:w-full sm:text-center sm:text-sm">
-          Please, connect your wallet.
-        </h3>
-      )} */}
     </>
   );
 };
