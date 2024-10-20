@@ -346,6 +346,7 @@ export default function RealStateDetailContainer({
         <div className="flex gap-2 flex-row w-6/12 m-auto items-center justify-center">
           {TokensTestAvalanche.map((token) => (
             <Button
+              key={token.address}
               className="w-1/6 p-2 bg-gray-200 rounded-xl m-auto"
               onClick={() => mint(token.address, token.function || '')}
             >
